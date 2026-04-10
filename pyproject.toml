@@ -71,7 +71,7 @@ hypothesis = "^6.0"
 pytest-benchmark = "^5.1.0"
 pytest-html = "^4.0"
 httpx = "^0.28.1"
-types-pyyaml = "^6.0.12.20250915"
+types-pyyaml = "^6.0.12.20260408"
 pytest-xdist = "^3.8.0"
 
 [tool.poetry.group.observability]
