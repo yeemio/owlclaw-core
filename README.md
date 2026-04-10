@@ -44,6 +44,11 @@ poetry install
 poetry run owlclaw --help
 ```
 
+Runtime baseline:
+
+- Python 3.10 to 3.13
+- Poetry-managed environment
+
 Minimal example:
 
 ```python
