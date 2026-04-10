@@ -7,7 +7,7 @@ from owlclaw.integrations.llm import LLMClient, LLMConfig, PromptBuilder
 
 
 async def main() -> None:
-    # 方式一：从 YAML 加载（示例配置在 docs/llm/）
+    # 方式一：从 YAML 加载
     config_path = Path(__file__).resolve().parent.parent.parent / "docs" / "llm" / "owlclaw.llm.example.yaml"
     config = LLMConfig.from_yaml(config_path) if config_path.exists() else LLMConfig.default_for_owlclaw()
     # Mock 模式：不发起真实请求，返回预定义内容

@@ -59,7 +59,7 @@ def main() -> None:
 
     # 6. In a real app you would call app.run() to start the Agent runtime
     #    (Hatchet worker, heartbeat, etc.). Here we only demonstrate registration.
-    # app.configure(soul="docs/SOUL.md", heartbeat_interval_minutes=30)
+    # app.configure(soul="SOUL.md", heartbeat_interval_minutes=30)
     # app.run()
 
 

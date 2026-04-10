@@ -1,8 +1,8 @@
 # OwlClaw default configuration template
 
 agent:
-  soul: docs/SOUL.md
-  identity: docs/IDENTITY.md
+  soul: SOUL.md
+  identity: IDENTITY.md
   heartbeat_interval_minutes: 30
   max_iterations: 10
 
@@ -23,4 +23,3 @@ security:
   data_masker:
     enabled: true
     rules: []
-

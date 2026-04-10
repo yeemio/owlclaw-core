@@ -22,8 +22,8 @@ else:
 class AgentConfig(BaseModel):
     """Agent runtime configuration."""
 
-    soul: str = Field(default="docs/SOUL.md", description="Path to SOUL.md file.")
-    identity: str = Field(default="docs/IDENTITY.md", description="Path to IDENTITY.md file.")
+    soul: str = Field(default="SOUL.md", description="Path to SOUL.md file.")
+    identity: str = Field(default="IDENTITY.md", description="Path to IDENTITY.md file.")
     heartbeat_interval_minutes: int = Field(default=30, ge=1, le=1440)
     max_iterations: int = Field(default=10, ge=1, le=100)
 
@@ -190,4 +190,3 @@ class OwlClawConfig(_RuntimeBaseSettings):
             extra="ignore",
         )
     )
-
