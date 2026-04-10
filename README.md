@@ -2,6 +2,9 @@
 
 Open-source runtime for turning existing business systems into governed AI agents without rewriting the system itself.
 
+Part of a broader local-first AI tooling stack by [yeemio](https://github.com/yeemio).
+Related public repos: [owlcc-byoscc](https://github.com/yeemio/owlcc-byoscc), [owl-github-intel](https://github.com/yeemio/owl-github-intel), [omlx-runtime-hardening](https://github.com/yeemio/omlx-runtime-hardening).
+
 `OwlClaw Core` focuses on the backend side of business AI:
 
 - agent runtime
