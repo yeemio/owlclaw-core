@@ -1,1 +1,0 @@
-import{j as e}from"./index-b9r8GGvF.js";function x({title:s,description:t,children:r}){return e.jsxs("section",{className:"space-y-4",children:[e.jsxs("header",{children:[e.jsx("h1",{className:"text-2xl font-semibold tracking-tight",children:s}),e.jsx("p",{className:"mt-2 max-w-2xl text-sm text-muted-foreground",children:t})]}),r]})}export{x as P};

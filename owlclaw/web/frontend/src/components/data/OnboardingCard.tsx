@@ -4,9 +4,9 @@ type LinkItem = {
 };
 
 const ONBOARDING_LINKS: LinkItem[] = [
-  { label: "Quick Start", href: "https://github.com/owlclaw/owlclaw/blob/main/docs/QUICK_START.md" },
-  { label: "Complete Workflow", href: "https://github.com/owlclaw/owlclaw/blob/main/docs/COMPLETE_WORKFLOW.md" },
-  { label: "SKILL.md Guide", href: "https://github.com/owlclaw/owlclaw/blob/main/docs/SKILL.md" },
+  { label: "Repository", href: "https://github.com/yeemio/owlclaw-core" },
+  { label: "Examples", href: "https://github.com/yeemio/owlclaw-core/tree/main/examples" },
+  { label: "Skills", href: "https://github.com/yeemio/owlclaw-core/tree/main/skills" },
 ];
 
 export function OnboardingCard() {
@@ -14,7 +14,7 @@ export function OnboardingCard() {
     <section className="rounded-xl border border-primary/30 bg-primary/10 p-4">
       <h2 className="text-sm font-semibold">First Run Guide</h2>
       <p className="mt-2 text-sm text-muted-foreground">
-        New to OwlClaw Console. Start from docs below to get runtime, governance, and skills online quickly.
+        Start from the public repository, examples, and skill packages to get the runtime online quickly.
       </p>
       <div className="mt-4 flex flex-wrap gap-2">
         {ONBOARDING_LINKS.map((link) => (
