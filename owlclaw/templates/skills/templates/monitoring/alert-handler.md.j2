@@ -1,0 +1,60 @@
+{#
+name: Alert Handler
+description: Handle alerts from multiple sources and route to notification channels
+tags: [monitoring, alert, notification, handler]
+parameters:
+  - name: skill_name
+    type: str
+    description: Skill display name
+    required: true
+  - name: skill_description
+    type: str
+    description: Brief description of alert handling logic
+    required: true
+  - name: alert_sources
+    type: str
+    description: Comma-separated alert sources (e.g. prometheus, pagerduty, custom)
+    required: true
+  - name: notification_channels
+    type: str
+    description: Comma-separated notification channels (e.g. email, slack, webhook)
+    required: true
+examples:
+  - "Handle Prometheus alerts and notify via Slack"
+  - "Aggregate alerts from multiple sources, send to email"
+#}
+---
+name: {{ skill_name | kebab_case }}
+description: {{ skill_description }}
+metadata:
+  author: owlclaw
+  version: "1.0"
+owlclaw:
+  spec_version: "1.0"
+  task_type: monitoring
+---
+# {{ skill_name }} — 使用指南
+
+## 目标
+
+{{ skill_description }}
+
+## 告警来源
+
+- 来源：{{ alert_sources }}
+
+## 通知通道
+
+- 通道：{{ notification_channels }}
+
+## 处理流程
+
+1. 接收来自各源的告警事件
+2. 去重、聚合（相同告警合并）
+3. 按优先级和规则路由到通知通道
+4. 记录处理结果
+
+## 注意事项
+
+- 确保 alert_sources 与现有监控系统兼容
+- notification_channels 需预先配置

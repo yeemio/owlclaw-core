@@ -1,0 +1,9 @@
+OwlClaw Core
+Copyright 2026 yeemio
+
+This repository is an open-source public release of the OwlClaw runtime core.
+
+The public repository intentionally excludes a large portion of the private
+documentation and internal workflow assets used during development.
+
+Third-party software and dependencies remain subject to their own licenses.

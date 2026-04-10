@@ -1,0 +1,75 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+.codex/
+*.code-workspace
+*.swp
+*.swo
+
+# Testing
+.pytest_cache/
+.hypothesis/
+htmlcov/
+report.html
+.coverage
+coverage.xml
+
+# Mypy
+.mypy_cache/
+
+# Ruff
+.ruff_cache/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+.env.*.local
+tmp/
+temp/
+
+# Windows reserved name (accidental create)
+nul
+
+# Logs
+logs/
+*.log
+
+# Database
+*.db
+*.sqlite3
+
+# External dependencies (submodules / vendored projects)
+.langfuse/
+
+# Local agent/runtime caches and generated protocol drill artifacts
+.owlclaw/
+.kiro/runtime/
+docs/protocol/reports/
+docs/protocol/cross_lang_validation_latest.md
+docs/ops/reports/
+
+# Local temp and kiro backups (do not push)
+.tmp/
+.kiro/runtime-cleanup-backups/
+
+# Local Claude/Codex permissions (machine-specific)
+.claude/settings.local.json

@@ -1,0 +1,59 @@
+{#
+name: Binding HTTP Client
+description: Declarative HTTP binding template with simplified tools syntax
+tags: [integration, binding, http, declarative]
+parameters:
+  - name: skill_name
+    type: str
+    description: Skill display name
+    required: true
+  - name: skill_description
+    type: str
+    description: Brief description of the integration purpose
+    required: true
+  - name: base_url
+    type: str
+    description: API base URL (e.g. https://api.example.com)
+    required: true
+  - name: token_env
+    type: str
+    description: Environment variable for API token
+    default: "API_TOKEN"
+examples:
+  - "HTTP binding skill for order query"
+  - "Declarative API integration without Python handler"
+#}
+---
+name: {{ skill_name | kebab_case }}
+description: {{ skill_description }}
+owlclaw:
+  prerequisites:
+    env:
+      - {{ token_env }}
+tools:
+  fetch-resource:
+    description: Fetch one resource by id
+    resource_id: string
+    binding:
+      type: http
+      method: GET
+      url: {{ base_url }}/resources/{resource_id}
+      headers:
+        Authorization: Bearer ${{ "{" }}{{ token_env }}{{ "}" }}
+---
+# {{ skill_name }} — 使用指南
+
+## 目标
+
+{{ skill_description }}
+
+## 运行方式
+
+1. 在环境变量中设置 `{{ token_env }}`。
+2. 使用 `fetch-resource` 读取目标资源。
+3. 根据返回结果给出业务结论。
+
+## 注意事项
+
+- 所有敏感信息使用 `${ENV_VAR}` 引用，不要写明文 token。
+- 如果需要写操作，先将 binding `mode` 设为 `shadow` 做对比验证。

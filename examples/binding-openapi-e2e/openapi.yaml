@@ -1,0 +1,39 @@
+openapi: 3.0.3
+servers:
+  - url: https://api.example.com
+paths:
+  /orders:
+    post:
+      operationId: create-order
+      summary: create order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                order_id:
+                  type: string
+                amount:
+                  type: number
+              required:
+                - order_id
+                - amount
+      responses:
+        "201":
+          description: created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+      security:
+        - xApi: []
+components:
+  securitySchemes:
+    xApi:
+      type: apiKey
+      in: header
+      name: X-API-Key

@@ -1,0 +1,62 @@
+{#
+name: Metric Monitor
+description: Monitor metrics and alert when thresholds are exceeded
+tags: [monitoring, metrics, threshold, alert]
+parameters:
+  - name: skill_name
+    type: str
+    description: Skill display name
+    required: true
+  - name: skill_description
+    type: str
+    description: Brief description of what metrics are monitored
+    required: true
+  - name: metrics
+    type: str
+    description: Comma-separated metric names to monitor (e.g. cpu_usage, memory_usage)
+    required: true
+  - name: thresholds
+    type: str
+    description: Threshold rules (e.g. "cpu_usage>90,memory_usage>80")
+    required: true
+  - name: check_interval
+    type: int
+    description: Check interval in seconds
+    default: 60
+examples:
+  - "Monitor CPU and memory, alert when CPU>90% or memory>80%"
+#}
+---
+name: {{ skill_name | kebab_case }}
+description: {{ skill_description }}
+metadata:
+  author: owlclaw
+  version: "1.0"
+owlclaw:
+  spec_version: "1.0"
+  task_type: monitoring
+  constraints:
+    max_daily_calls: 1440
+---
+# {{ skill_name }} — 使用指南
+
+## 目标
+
+{{ skill_description }}
+
+## 监控指标
+
+- 指标：{{ metrics }}
+- 检查间隔：{{ check_interval }} 秒
+- 阈值规则：{{ thresholds }}
+
+## 指标逻辑
+
+- 定时拉取指标数据
+- 按阈值规则评估，超出阈值时记录告警
+- 支持多指标组合判断
+
+## 注意事项
+
+- metrics 为逗号分隔的指标名
+- thresholds 格式示例：metric_name>value 或 metric_name<value

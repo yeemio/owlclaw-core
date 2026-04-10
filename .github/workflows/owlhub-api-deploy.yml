@@ -1,0 +1,147 @@
+name: owlhub-api-deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy_target:
+        description: "Deployment target environment"
+        required: true
+        default: "staging"
+        type: choice
+        options:
+          - staging
+          - production
+          - both
+  push:
+    branches: [main]
+    paths:
+      - "owlclaw/owlhub/**"
+      - "deploy/Dockerfile.owlhub-api"
+      - "deploy/k8s/owlhub-api-*.yaml"
+      - ".github/workflows/owlhub-api-deploy.yml"
+    tags:
+      - "v*"
+
+jobs:
+  build-image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image_tag: ${{ steps.meta.outputs.image_tag }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Resolve image tag
+        id: meta
+        run: echo "image_tag=${GITHUB_SHA::12}" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: deploy/Dockerfile.owlhub-api
+          push: true
+          tags: ghcr.io/${{ github.repository }}/owlhub-api:${{ steps.meta.outputs.image_tag }}
+
+  deploy-staging:
+    needs: build-image
+    if: github.event_name == 'push' || github.event.inputs.deploy_target == 'staging' || github.event.inputs.deploy_target == 'both'
+    runs-on: ubuntu-latest
+    environment:
+      name: owlhub-staging
+      url: ${{ vars.OWLHUB_API_BASE_URL_STAGING }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: v1.30.0
+
+      - name: Configure kubeconfig
+        shell: bash
+        run: |
+          mkdir -p "$HOME/.kube"
+          echo "${{ secrets.KUBE_CONFIG_STAGING_B64 }}" | base64 --decode > "$HOME/.kube/config"
+
+      - name: Apply manifests
+        shell: bash
+        run: |
+          kubectl apply -f deploy/k8s/owlhub-api-configmap.yaml -n "${{ vars.OWLHUB_K8S_NAMESPACE_STAGING }}"
+          kubectl apply -f deploy/k8s/owlhub-api-secret.yaml -n "${{ vars.OWLHUB_K8S_NAMESPACE_STAGING }}"
+          kubectl apply -f deploy/k8s/owlhub-api-deployment.yaml -n "${{ vars.OWLHUB_K8S_NAMESPACE_STAGING }}"
+          kubectl apply -f deploy/k8s/owlhub-api-service.yaml -n "${{ vars.OWLHUB_K8S_NAMESPACE_STAGING }}"
+          kubectl apply -f deploy/k8s/owlhub-api-ingress.yaml -n "${{ vars.OWLHUB_K8S_NAMESPACE_STAGING }}"
+          kubectl set image deployment/owlhub-api owlhub-api=ghcr.io/${{ github.repository }}/owlhub-api:${{ needs.build-image.outputs.image_tag }} -n "${{ vars.OWLHUB_K8S_NAMESPACE_STAGING }}"
+          kubectl rollout status deployment/owlhub-api -n "${{ vars.OWLHUB_K8S_NAMESPACE_STAGING }}" --timeout=180s
+
+      - name: Run database migrations
+        shell: bash
+        run: |
+          POD_NAME="$(kubectl get pods -n "${{ vars.OWLHUB_K8S_NAMESPACE_STAGING }}" -l app=owlhub-api -o jsonpath='{.items[0].metadata.name}')"
+          kubectl exec -n "${{ vars.OWLHUB_K8S_NAMESPACE_STAGING }}" "$POD_NAME" -- poetry run alembic -c alembic.ini upgrade head
+
+      - name: Smoke tests
+        shell: bash
+        run: |
+          curl --fail --show-error --silent "${{ vars.OWLHUB_API_BASE_URL_STAGING }}/health"
+          curl --fail --show-error --silent "${{ vars.OWLHUB_API_BASE_URL_STAGING }}/metrics"
+
+  deploy-production:
+    needs: build-image
+    if: startsWith(github.ref, 'refs/tags/v') || github.event.inputs.deploy_target == 'production' || github.event.inputs.deploy_target == 'both'
+    runs-on: ubuntu-latest
+    environment:
+      name: owlhub-production
+      url: ${{ vars.OWLHUB_API_BASE_URL_PRODUCTION }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: v1.30.0
+
+      - name: Configure kubeconfig
+        shell: bash
+        run: |
+          mkdir -p "$HOME/.kube"
+          echo "${{ secrets.KUBE_CONFIG_PRODUCTION_B64 }}" | base64 --decode > "$HOME/.kube/config"
+
+      - name: Apply manifests
+        shell: bash
+        run: |
+          kubectl apply -f deploy/k8s/owlhub-api-configmap.yaml -n "${{ vars.OWLHUB_K8S_NAMESPACE_PRODUCTION }}"
+          kubectl apply -f deploy/k8s/owlhub-api-secret.yaml -n "${{ vars.OWLHUB_K8S_NAMESPACE_PRODUCTION }}"
+          kubectl apply -f deploy/k8s/owlhub-api-deployment.yaml -n "${{ vars.OWLHUB_K8S_NAMESPACE_PRODUCTION }}"
+          kubectl apply -f deploy/k8s/owlhub-api-service.yaml -n "${{ vars.OWLHUB_K8S_NAMESPACE_PRODUCTION }}"
+          kubectl apply -f deploy/k8s/owlhub-api-ingress.yaml -n "${{ vars.OWLHUB_K8S_NAMESPACE_PRODUCTION }}"
+          kubectl set image deployment/owlhub-api owlhub-api=ghcr.io/${{ github.repository }}/owlhub-api:${{ needs.build-image.outputs.image_tag }} -n "${{ vars.OWLHUB_K8S_NAMESPACE_PRODUCTION }}"
+          kubectl rollout status deployment/owlhub-api -n "${{ vars.OWLHUB_K8S_NAMESPACE_PRODUCTION }}" --timeout=180s
+
+      - name: Run database migrations
+        shell: bash
+        run: |
+          POD_NAME="$(kubectl get pods -n "${{ vars.OWLHUB_K8S_NAMESPACE_PRODUCTION }}" -l app=owlhub-api -o jsonpath='{.items[0].metadata.name}')"
+          kubectl exec -n "${{ vars.OWLHUB_K8S_NAMESPACE_PRODUCTION }}" "$POD_NAME" -- poetry run alembic -c alembic.ini upgrade head
+
+      - name: Smoke tests
+        shell: bash
+        run: |
+          curl --fail --show-error --silent "${{ vars.OWLHUB_API_BASE_URL_PRODUCTION }}/health"
+          curl --fail --show-error --silent "${{ vars.OWLHUB_API_BASE_URL_PRODUCTION }}/metrics"

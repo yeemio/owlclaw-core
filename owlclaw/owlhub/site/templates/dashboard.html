@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}OwlHub - Dashboard{% endblock %}
+{% block content %}
+<h1>Statistics Dashboard</h1>
+<div class="card">
+  <h2>Total Skills</h2>
+  <div style="font-size:28px;font-weight:700;">{{ total_skills }}</div>
+</div>
+<div class="card">
+  <h2>Top Skills by Downloads</h2>
+  <ol>
+    {% for skill in top_skills %}
+    <li>{{ skill.name }} ({{ skill.statistics.total_downloads or 0 }})</li>
+    {% endfor %}
+  </ol>
+</div>
+<div class="card">
+  <h2>Recently Updated</h2>
+  <ul>
+    {% for skill in recent_skills %}
+    <li>{{ skill.name }} - {{ skill.statistics.last_updated or "n/a" }}</li>
+    {% endfor %}
+  </ul>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}

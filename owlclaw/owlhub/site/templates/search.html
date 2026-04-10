@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}OwlHub - Search{% endblock %}
+{% block content %}
+<h1>Search Skills</h1>
+<input id="q" type="text" placeholder="Type to filter by name/description/tag" style="width:100%;padding:10px;border:1px solid #d1d1cb;border-radius:8px;">
+{% if tag_cloud %}
+<select id="tag-filter" style="margin-top:10px;padding:8px;border:1px solid #d1d1cb;border-radius:8px;">
+  <option value="">All tags</option>
+  {% for tag_name, count in tag_cloud.items() %}
+  <option value="{{ tag_name | lower }}">{{ tag_name }} ({{ count }})</option>
+  {% endfor %}
+</select>
+{% endif %}
+<div id="results" style="margin-top:14px;">
+  {% for skill in skills %}
+  <article class="card" data-search="{{ (skill.name ~ ' ' ~ skill.description ~ ' ' ~ (skill.tags | join(' '))) | lower }}" data-tags="{{ (skill.tags | join(',')) | lower }}">
+    <h2>{{ skill.name }} <span class="meta">@{{ skill.version }}</span></h2>
+    <div class="meta">{{ skill.publisher }}</div>
+    <p>{{ skill.description }}</p>
+  </article>
+  {% endfor %}
+</div>
+<script>
+const input = document.getElementById("q");
+const tagFilter = document.getElementById("tag-filter");
+const cards = Array.from(document.querySelectorAll("[data-search]"));
+function applyFilter() {
+  const q = input.value.trim().toLowerCase();
+  const tag = tagFilter ? tagFilter.value.trim().toLowerCase() : "";
+  for (const card of cards) {
+    const text = card.getAttribute("data-search") || "";
+    const tags = (card.getAttribute("data-tags") || "").split(",").filter(Boolean);
+    const keywordOk = !q || text.includes(q);
+    const tagOk = !tag || tags.includes(tag);
+    card.style.display = keywordOk && tagOk ? "" : "none";
+  }
+}
+input.addEventListener("input", applyFilter);
+if (tagFilter) { tagFilter.addEventListener("change", applyFilter); }
+</script>
+{% endblock %}

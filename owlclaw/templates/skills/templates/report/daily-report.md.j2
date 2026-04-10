@@ -1,0 +1,63 @@
+{#
+name: Daily Report
+description: Generate daily reports from data sources with configurable sections and recipients
+tags: [report, daily, aggregation]
+parameters:
+  - name: skill_name
+    type: str
+    description: Skill display name
+    required: true
+  - name: skill_description
+    type: str
+    description: Brief description of daily report purpose
+    required: true
+  - name: data_sources
+    type: str
+    description: Comma-separated data sources (e.g. db:sales, api:metrics, logs)
+    required: true
+  - name: report_sections
+    type: str
+    description: Comma-separated section names (e.g. summary, trends, issues)
+    required: true
+  - name: recipients
+    type: str
+    description: Comma-separated recipient channels (e.g. email, slack, webhook)
+    required: true
+examples:
+  - "Daily sales and inventory report"
+  - "Ops daily summary with incident highlights"
+#}
+---
+name: {{ skill_name | kebab_case }}
+description: {{ skill_description }}
+metadata:
+  author: owlclaw
+  version: "1.0"
+owlclaw:
+  spec_version: "1.0"
+  task_type: report
+---
+# {{ skill_name }} — 使用指南
+
+## 目标
+
+{{ skill_description }}
+
+## 报告配置
+
+- 数据源：{{ data_sources }}
+- 章节：{{ report_sections }}
+- 接收方：{{ recipients }}
+
+## 生成逻辑
+
+1. 从 data_sources 拉取数据
+2. 按 report_sections 组织内容
+3. 生成结构化日报
+4. 推送到 recipients 对应通道
+
+## 注意事项
+
+- 建议固定每日触发时间（如 9:00）
+- report_sections 顺序影响输出结构
+- recipients 需预先配置

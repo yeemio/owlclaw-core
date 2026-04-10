@@ -1,0 +1,60 @@
+{#
+name: Trend Detector
+description: Detect trends in metrics over a time window
+tags: [analysis, trend, metrics, time-series]
+parameters:
+  - name: skill_name
+    type: str
+    description: Skill display name
+    required: true
+  - name: skill_description
+    type: str
+    description: Brief description of trend detection purpose
+    required: true
+  - name: metrics
+    type: str
+    description: Comma-separated metrics to analyze (e.g. sales, traffic)
+    required: true
+  - name: time_window
+    type: str
+    description: Time window for analysis (e.g. 7d, 30d)
+    default: 7d
+  - name: sensitivity
+    type: str
+    description: Detection sensitivity (low, medium, high)
+    default: medium
+examples:
+  - "Detect sales trend over last 7 days"
+#}
+---
+name: {{ skill_name | kebab_case }}
+description: {{ skill_description }}
+metadata:
+  author: owlclaw
+  version: "1.0"
+owlclaw:
+  spec_version: "1.0"
+  task_type: analysis
+---
+# {{ skill_name }} — 使用指南
+
+## 目标
+
+{{ skill_description }}
+
+## 指标与窗口
+
+- 指标：{{ metrics }}
+- 时间窗口：{{ time_window }}
+- 灵敏度：{{ sensitivity }}
+
+## 趋势检测逻辑
+
+1. 获取时间窗口内的指标数据
+2. 计算趋势（上升/下降/平稳）
+3. 按 sensitivity 判断是否触发告警或报告
+
+## 注意事项
+
+- time_window 支持 d(天)、h(小时)
+- sensitivity 影响触发阈值

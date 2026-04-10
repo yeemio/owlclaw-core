@@ -1,0 +1,166 @@
+[tool.poetry]
+name = "owlclaw"
+version = "0.1.0"
+description = "Agent base for business applications — let mature systems gain AI autonomy without rewriting."
+authors = ["yeemio"]
+license = "Apache-2.0"
+readme = "README.md"
+homepage = "https://github.com/yeemio/owlclaw-core"
+repository = "https://github.com/yeemio/owlclaw-core"
+keywords = ["agent", "ai", "durable-execution", "business-automation"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+]
+packages = [{include = "owlclaw"}]
+include = [
+    { path = "owlclaw/web/static/**/*", format = ["sdist", "wheel"] },
+]
+exclude = [
+    "owlclaw/web/frontend/**",
+]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+hatchet-sdk = "^1.23.0"
+litellm = "^1.0"
+pydantic = "^2.0"
+pyyaml = "^6.0"
+jsonschema = {version = "^4.0", optional = true}
+pytest = {version = "^8.0", optional = true}
+pytest-asyncio = {version = "^0.24", optional = true}
+pytest-cov = {version = "^6.0", optional = true}
+ruff = {version = "^0.9", optional = true}
+mypy = {version = "^1.0", optional = true}
+packaging = "^24.0"
+sqlalchemy = {version = "^2.0", extras = ["asyncio"]}
+asyncpg = "^0.30"
+python-frontmatter = "^1.1"
+typer = "^0.12"
+rich = "^13.0"
+alembic = "^1.13"
+tzdata = "^2024.1"
+croniter = "^6.0.0"
+tiktoken = "^0.9"
+jinja2 = "^3.0"
+pgvector = "^0.4.2"
+qdrant-client = "^1.9.1"
+scikit-learn = "^1.5.0"
+langchain = {version = ">=0.1.0,<0.3.0", optional = true}
+langchain-core = {version = ">=0.1.0,<0.3.0", optional = true}
+fastapi = "^0.132.0"
+starlette = {version = "^0.40.0", optional = true}
+uvicorn = {version = "^0.30.0", optional = true}
+defusedxml = "0.7.1"
+
+[tool.poetry.group.dev.dependencies]
+psycopg2-binary = "^2.9"
+python-dotenv = "^1.0"
+pytest = "^8.0"
+pytest-asyncio = "^0.24"
+pytest-cov = "^6.0"
+testcontainers = {extras = ["postgres"], version = "^4.14.1"}
+ruff = "^0.9"
+mypy = "^1.0"
+hypothesis = "^6.0"
+pytest-benchmark = "^5.1.0"
+pytest-html = "^4.0"
+httpx = "^0.28.1"
+types-pyyaml = "^6.0.12.20250915"
+pytest-xdist = "^3.8.0"
+
+[tool.poetry.group.observability]
+optional = true
+
+[tool.poetry.group.observability.dependencies]
+langfuse = "^2.0"
+opentelemetry-api = "^1.0"
+opentelemetry-sdk = "^1.0"
+
+[tool.poetry.extras]
+langchain = ["langchain", "langchain-core", "jsonschema"]
+dev = ["pytest", "pytest-asyncio", "pytest-cov", "ruff", "mypy"]
+api = ["starlette", "uvicorn"]
+console = []
+
+[tool.poetry.scripts]
+owlclaw = "owlclaw.cli:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+# ── Ruff ──
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "C4", "UP"]
+ignore = ["E501", "I001", "C408", "C416"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["owlclaw"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+# ── Mypy ──
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+warn_unused_ignores = false
+warn_redundant_casts = false
+disallow_any_generics = false
+disallow_untyped_defs = false
+check_untyped_defs = true
+disallow_subclassing_any = false
+plugins = []
+
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+ignore_errors = true
+
+# ── Pytest ──
+[tool.pytest.ini_options]
+testpaths = []
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+asyncio_mode = "auto"
+markers = [
+    "unit: fast unit tests",
+    "integration: marks tests requiring external services (Hatchet, PostgreSQL)",
+    "e2e: end-to-end tests",
+    "slow: long-running tests",
+    "requires_postgres: requires PostgreSQL service",
+    "requires_hatchet: requires Hatchet service",
+    "requires_redis: requires Redis service",
+    "requires_kafka: requires Kafka service",
+]
+
+[tool.coverage.run]
+source = ["owlclaw"]
+omit = []
+branch = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+]
+
+[tool.coverage.html]
+directory = "htmlcov"

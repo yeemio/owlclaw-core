@@ -1,0 +1,26 @@
+# OwlClaw default configuration template
+
+agent:
+  soul: docs/SOUL.md
+  identity: docs/IDENTITY.md
+  heartbeat_interval_minutes: 30
+  max_iterations: 10
+
+integrations:
+  llm:
+    model: gpt-4o-mini
+    fallback_models: []
+    temperature: 0.7
+
+security:
+  sanitizer:
+    enabled: true
+    custom_rules: []
+  risk_gate:
+    enabled: true
+    confirmation_timeout_seconds: 300
+    default_risk_level: low
+  data_masker:
+    enabled: true
+    rules: []
+

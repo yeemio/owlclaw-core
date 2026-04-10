@@ -1,0 +1,60 @@
+{#
+name: Anomaly Detector
+description: Detect anomalies in data using configurable methods
+tags: [analysis, anomaly, detection, alert]
+parameters:
+  - name: skill_name
+    type: str
+    description: Skill display name
+    required: true
+  - name: skill_description
+    type: str
+    description: Brief description of anomaly detection purpose
+    required: true
+  - name: data_source
+    type: str
+    description: Data source to monitor (e.g. metrics, logs)
+    required: true
+  - name: detection_method
+    type: str
+    description: Detection method (e.g. threshold, zscore, iqr)
+    default: threshold
+  - name: threshold
+    type: str
+    description: Threshold or sensitivity (e.g. "3" for 3-sigma)
+    default: "3"
+examples:
+  - "Detect anomalies in API latency using zscore"
+#}
+---
+name: {{ skill_name | kebab_case }}
+description: {{ skill_description }}
+metadata:
+  author: owlclaw
+  version: "1.0"
+owlclaw:
+  spec_version: "1.0"
+  task_type: analysis
+---
+# {{ skill_name }} — 使用指南
+
+## 目标
+
+{{ skill_description }}
+
+## 数据源与方法
+
+- 数据源：{{ data_source }}
+- 检测方法：{{ detection_method }}
+- 阈值/参数：{{ threshold }}
+
+## 异常检测逻辑
+
+1. 从 data_source 拉取数据
+2. 按 detection_method 计算异常分数
+3. 超过 threshold 判定为异常并记录
+
+## 注意事项
+
+- detection_method 可选：threshold, zscore, iqr
+- threshold 含义因方法而异

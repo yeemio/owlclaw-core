@@ -1,0 +1,63 @@
+{#
+name: Data Analyzer
+description: Analyze data from sources and produce structured outputs
+tags: [analysis, data, report]
+parameters:
+  - name: skill_name
+    type: str
+    description: Skill display name
+    required: true
+  - name: skill_description
+    type: str
+    description: Brief description of analysis purpose
+    required: true
+  - name: data_sources
+    type: str
+    description: Comma-separated data sources (e.g. database, api, file)
+    required: true
+  - name: analysis_type
+    type: str
+    description: Type of analysis (e.g. summary, aggregation, comparison)
+    required: true
+  - name: output_format
+    type: str
+    description: Output format (e.g. json, markdown, table)
+    default: markdown
+examples:
+  - "Analyze sales data from API, output summary in markdown"
+#}
+---
+name: {{ skill_name | kebab_case }}
+description: {{ skill_description }}
+metadata:
+  author: owlclaw
+  version: "1.0"
+owlclaw:
+  spec_version: "1.0"
+  task_type: analysis
+---
+# {{ skill_name }} — 使用指南
+
+## 目标
+
+{{ skill_description }}
+
+## 数据源
+
+- 来源：{{ data_sources }}
+
+## 分析类型
+
+- 类型：{{ analysis_type }}
+- 输出格式：{{ output_format }}
+
+## 分析流程
+
+1. 从数据源拉取数据
+2. 按 analysis_type 执行分析逻辑
+3. 格式化输出为 {{ output_format }}
+
+## 注意事项
+
+- 确保数据源可访问
+- 选择合适的 output_format 便于下游消费

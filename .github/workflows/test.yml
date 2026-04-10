@@ -1,0 +1,101 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: owlclaw_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.8.5
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Install dependencies
+        run: poetry install --no-interaction
+
+      - name: Initialize test database (shared SQL with local compose)
+        env:
+          PGPASSWORD: postgres
+        run: psql -h localhost -U postgres -d owlclaw_test -f deploy/init-test-db.sql
+
+      - name: Run unit tests with strict coverage
+        env:
+          DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/owlclaw_test
+          OWLCLAW_DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/owlclaw_test
+        run: |
+          timeout 25m poetry run pytest \
+            tests/unit/ \
+            --cov=owlclaw \
+            --cov-report=term \
+            --cov-fail-under=73
+
+      - name: Run protocol governance consistency checks
+        run: |
+          poetry run pytest \
+            tests/unit/test_contract_diff_script.py \
+            tests/unit/test_protocol_error_model_consistency.py \
+            -q
+
+      - name: Run protocol governance drill
+        run: poetry run python scripts/protocol_governance_drill.py
+
+      - name: Run integration tests with appended coverage
+        env:
+          DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/owlclaw_test
+          OWLCLAW_DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/owlclaw_test
+        run: |
+          timeout 20m poetry run pytest \
+            tests/integration/ \
+            -vv \
+            --maxfail=5 \
+            --durations=20 \
+            --cov=owlclaw \
+            --cov-append \
+            --cov-report=xml \
+            --cov-report=term \
+            --cov-fail-under=75
+
+      - name: Run examples smoke validator
+        run: poetry run python scripts/validate_examples.py
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage.xml
+          fail_ci_if_error: false

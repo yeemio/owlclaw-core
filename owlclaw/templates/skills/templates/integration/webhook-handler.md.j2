@@ -1,0 +1,63 @@
+{#
+name: Webhook Handler
+description: Handle incoming webhooks with configurable path, payload format, and validation
+tags: [integration, webhook, handler, http]
+parameters:
+  - name: skill_name
+    type: str
+    description: Skill display name
+    required: true
+  - name: skill_description
+    type: str
+    description: Brief description of webhook handling purpose
+    required: true
+  - name: webhook_path
+    type: str
+    description: Webhook path or route (e.g. /webhooks/orders, /events)
+    required: true
+  - name: payload_format
+    type: str
+    description: Payload format (e.g. json, form, raw)
+    default: "json"
+  - name: validation
+    type: str
+    description: Validation rule or secret header name for signature verification
+    default: ""
+examples:
+  - "Handle payment webhooks with HMAC validation"
+  - "GitHub push event webhook receiver"
+#}
+---
+name: {{ skill_name | kebab_case }}
+description: {{ skill_description }}
+metadata:
+  author: owlclaw
+  version: "1.0"
+owlclaw:
+  spec_version: "1.0"
+  task_type: integration
+---
+# {{ skill_name }} — 使用指南
+
+## 目标
+
+{{ skill_description }}
+
+## Webhook 配置
+
+- 路径：{{ webhook_path }}
+- Payload 格式：{{ payload_format }}
+- 校验：{{ validation }}
+
+## 处理逻辑
+
+1. 监听 {{ webhook_path }} 的 HTTP 请求
+2. 按 payload_format 解析请求体
+3. 若 validation 非空，校验签名或 token
+4. 执行业务逻辑并返回响应
+
+## 注意事项
+
+- payload_format 为 json 时解析 JSON 体
+- validation 可填 header 名（如 X-Hub-Signature）或校验规则
+- 建议返回 2xx 快速应答，异步处理重逻辑

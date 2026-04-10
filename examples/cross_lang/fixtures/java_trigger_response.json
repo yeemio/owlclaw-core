@@ -1,0 +1,6 @@
+{
+  "run_id": "demo-run-001",
+  "status": "accepted",
+  "message": "trigger queued",
+  "trace_id": "trace-001"
+}

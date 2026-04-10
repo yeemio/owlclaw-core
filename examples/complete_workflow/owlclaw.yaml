@@ -1,0 +1,19 @@
+governance:
+  use_inmemory_ledger: true
+  visibility:
+    budget:
+      high_cost_threshold: "0.5"
+      budget_limits:
+        inventory-workflow-agent: "10.0"
+    circuit_breaker:
+      failure_threshold: 3
+      recovery_timeout: 60
+
+integrations:
+  llm:
+    mock_mode: true
+    model: mock
+    mock_responses:
+      default:
+        content: "Inventory workflow decision completed."
+        function_calls: []

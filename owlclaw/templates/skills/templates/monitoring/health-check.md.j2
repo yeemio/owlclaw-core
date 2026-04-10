@@ -1,0 +1,62 @@
+{#
+name: Health Check Monitor
+description: Monitor system health and alert on issues
+tags: [monitoring, health, alert, endpoint]
+parameters:
+  - name: skill_name
+    type: str
+    description: Skill display name
+    required: true
+  - name: skill_description
+    type: str
+    description: Brief description of what this monitor does
+    required: true
+  - name: check_interval
+    type: int
+    description: Check interval in seconds
+    default: 60
+  - name: alert_threshold
+    type: int
+    description: Failed checks before alerting
+    default: 3
+  - name: endpoints
+    type: str
+    description: Comma-separated list of endpoints to check
+    required: true
+examples:
+  - "Health check for API endpoints every 60 seconds"
+  - "Monitor /health, /ready every 30 seconds"
+#}
+---
+name: {{ skill_name | kebab_case }}
+description: {{ skill_description }}
+metadata:
+  author: owlclaw
+  version: "1.0"
+owlclaw:
+  spec_version: "1.0"
+  task_type: monitoring
+  constraints:
+    max_daily_calls: 1440
+---
+# {{ skill_name }} — 使用指南
+
+## 目标
+
+{{ skill_description }}
+
+## 检查项
+
+- 检查以下端点可用性：{{ endpoints }}
+- 检查间隔：{{ check_interval }} 秒
+- 连续失败 {{ alert_threshold }} 次后触发告警
+
+## 告警策略
+
+- 端点无响应或返回非 2xx 时记录失败
+- 达到阈值后执行告警流程
+
+## 注意事项
+
+- 确保 endpoints 格式正确（逗号分隔）
+- 建议 check_interval 不少于 30 秒，避免过于频繁

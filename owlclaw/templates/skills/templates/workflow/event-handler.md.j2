@@ -1,0 +1,60 @@
+{#
+name: Event Handler
+description: Handle events by type with configurable handlers and filters
+tags: [workflow, event, handler]
+parameters:
+  - name: skill_name
+    type: str
+    description: Skill display name
+    required: true
+  - name: skill_description
+    type: str
+    description: Brief description of event handling purpose
+    required: true
+  - name: event_types
+    type: str
+    description: Comma-separated event types to handle (e.g. create,update,delete)
+    required: true
+  - name: handlers
+    type: str
+    description: Comma-separated handler names or actions per event type
+    required: true
+  - name: filters
+    type: str
+    description: Optional filter conditions (e.g. "status=active")
+    default: ""
+examples:
+  - "Handle order events: create->notify, update->sync"
+#}
+---
+name: {{ skill_name | kebab_case }}
+description: {{ skill_description }}
+metadata:
+  author: owlclaw
+  version: "1.0"
+owlclaw:
+  spec_version: "1.0"
+  task_type: workflow
+---
+# {{ skill_name }} — 使用指南
+
+## 目标
+
+{{ skill_description }}
+
+## 事件配置
+
+- 事件类型：{{ event_types }}
+- 处理器：{{ handlers }}
+- 过滤条件：{{ filters }}
+
+## 处理逻辑
+
+1. 接收事件，按 event_types 路由
+2. 应用 filters 过滤
+3. 调用对应 handlers 执行
+
+## 注意事项
+
+- event_types 与 handlers 需一一对应
+- filters 为空表示不过滤

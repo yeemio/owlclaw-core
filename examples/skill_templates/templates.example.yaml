@@ -1,0 +1,10 @@
+# Example configuration for SKILL.md template library
+# Copy to config/templates.yaml and adjust as needed
+
+# Path to templates directory (default: owlclaw bundled templates)
+# templates_dir: owlclaw/templates/skills/templates
+
+# Validation rules (optional overrides)
+# validation:
+#   required_frontmatter: [name, description]
+#   name_pattern: "^[a-z0-9]+(-[a-z0-9]+)*$"

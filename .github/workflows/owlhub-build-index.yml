@@ -1,0 +1,79 @@
+name: owlhub-build-index
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "owlclaw/owlhub/**"
+      - "scripts/owlhub_*.py"
+      - ".github/workflows/owlhub-build-index.yml"
+
+jobs:
+  build-index:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Poetry
+        uses: abatilo/actions-poetry@v3
+        with:
+          poetry-version: "1.8.4"
+
+      - name: Install dependencies
+        run: poetry install --no-interaction --no-root
+
+      - name: Build OwlHub index
+        run: |
+          poetry run python scripts/owlhub_build_index.py \
+            --output dist/owlhub/index.json \
+            --repos templates/skills \
+            --github-token "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Generate OwlHub static site
+        run: |
+          poetry run python scripts/owlhub_generate_site.py \
+            --index dist/owlhub/index.json \
+            --output dist/owlhub/site \
+            --base-url "${{ vars.OWLHUB_BASE_URL || 'https://owlhub.local' }}"
+
+      - name: Add CNAME (optional)
+        if: ${{ vars.OWLHUB_CNAME != '' }}
+        run: |
+          echo "${{ vars.OWLHUB_CNAME }}" > dist/owlhub/site/CNAME
+
+      - name: Upload index artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: owlhub-index
+          path: dist/owlhub/index.json
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/owlhub/site
+
+  deploy-pages:
+    if: github.ref == 'refs/heads/main'
+    needs: build-index
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

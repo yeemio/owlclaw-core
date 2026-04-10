@@ -1,0 +1,63 @@
+{#
+name: Summary Generator
+description: Generate summaries from content source with configurable length and format
+tags: [report, summary, llm]
+parameters:
+  - name: skill_name
+    type: str
+    description: Skill display name
+    required: true
+  - name: skill_description
+    type: str
+    description: Brief description of summary generation purpose
+    required: true
+  - name: content_source
+    type: str
+    description: Source of content to summarize (e.g. documents, api, stream)
+    required: true
+  - name: summary_length
+    type: str
+    description: Target length (e.g. short, medium, long)
+    default: "medium"
+  - name: format
+    type: str
+    description: Output format (e.g. plain, markdown, bullet_points)
+    default: "markdown"
+examples:
+  - "Summarize meeting notes into bullet points"
+  - "Generate executive summary from long documents"
+#}
+---
+name: {{ skill_name | kebab_case }}
+description: {{ skill_description }}
+metadata:
+  author: owlclaw
+  version: "1.0"
+owlclaw:
+  spec_version: "1.0"
+  task_type: report
+---
+# {{ skill_name }} — 使用指南
+
+## 目标
+
+{{ skill_description }}
+
+## 配置
+
+- 内容源：{{ content_source }}
+- 摘要长度：{{ summary_length }}
+- 输出格式：{{ format }}
+
+## 生成逻辑
+
+1. 从 content_source 获取原始内容
+2. 按 summary_length 控制输出篇幅
+3. 生成摘要并格式化为 format 指定形式
+4. 返回或持久化结果
+
+## 注意事项
+
+- summary_length 建议：short（<200 字）、medium（~500 字）、long（~1000 字）
+- format 为 bullet_points 时输出要点列表
+- 超长内容建议先分块再汇总

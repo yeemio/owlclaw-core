@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "owlclaw-mcp"
+version = "0.1.0"
+description = "MCP server package for OwlClaw."
+authors = ["yeemio"]
+license = "Apache-2.0"
+readme = "README.md"
+packages = [{ include = "owlclaw_mcp" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+owlclaw = ">=0.1.0"
+
+[tool.poetry.scripts]
+owlclaw-mcp = "owlclaw_mcp.server:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}OwlHub - Tag {{ tag }}{% endblock %}
+{% block content %}
+<h1>Tag: {{ tag }}</h1>
+{% if not skills %}
+<div class="card">No skills under this tag.</div>
+{% endif %}
+{% for skill in skills %}
+<article class="card">
+  <h2>{{ skill.name }} <span class="meta">@{{ skill.version }}</span></h2>
+  <div class="meta">{{ skill.publisher }}</div>
+  <p>{{ skill.description }}</p>
+  <p><a href="/skills/{{ skill.publisher }}-{{ skill.name }}-{{ skill.version }}.html">Details</a></p>
+</article>
+{% endfor %}
+{% endblock %}

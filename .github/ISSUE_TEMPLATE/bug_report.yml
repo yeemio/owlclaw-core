@@ -1,0 +1,45 @@
+name: Bug Report
+description: Report a reproducible problem in OwlClaw.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What happened and what did you expect?
+      placeholder: Short and specific description.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps To Reproduce
+      description: Provide a minimal sequence to reproduce the bug.
+      placeholder: |
+        1. Run ...
+        2. Call ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / Traceback
+      description: Paste relevant logs or traceback. Redact secrets.
+      render: shell
+  - type: input
+    id: version
+    attributes:
+      label: OwlClaw Version
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: input
+    id: python
+    attributes:
+      label: Python Version
+      placeholder: "3.10 / 3.11 / 3.12"
+    validations:
+      required: true

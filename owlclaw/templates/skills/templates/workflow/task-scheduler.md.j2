@@ -1,0 +1,60 @@
+{#
+name: Task Scheduler
+description: Schedule tasks with dependencies and execution order
+tags: [workflow, schedule, tasks, dependencies]
+parameters:
+  - name: skill_name
+    type: str
+    description: Skill display name
+    required: true
+  - name: skill_description
+    type: str
+    description: Brief description of scheduling purpose
+    required: true
+  - name: schedule_type
+    type: str
+    description: Schedule type (cron, interval, manual)
+    default: cron
+  - name: tasks
+    type: str
+    description: Comma-separated task names or IDs
+    required: true
+  - name: dependencies
+    type: str
+    description: Task dependencies (e.g. "b->a,c->b" means b depends on a)
+    default: ""
+examples:
+  - "Schedule report generation with dependency: fetch -> aggregate -> send"
+#}
+---
+name: {{ skill_name | kebab_case }}
+description: {{ skill_description }}
+metadata:
+  author: owlclaw
+  version: "1.0"
+owlclaw:
+  spec_version: "1.0"
+  task_type: workflow
+---
+# {{ skill_name }} — 使用指南
+
+## 目标
+
+{{ skill_description }}
+
+## 调度配置
+
+- 类型：{{ schedule_type }}
+- 任务：{{ tasks }}
+- 依赖：{{ dependencies }}
+
+## 执行逻辑
+
+1. 按 dependencies 解析执行顺序
+2. 无依赖任务并行执行
+3. 依赖满足后触发下游任务
+
+## 注意事项
+
+- dependencies 格式：task_id->dep_id 或留空表示无依赖
+- schedule_type 决定触发方式

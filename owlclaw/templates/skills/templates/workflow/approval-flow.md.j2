@@ -1,0 +1,60 @@
+{#
+name: Approval Flow
+description: Multi-stage approval workflow with configurable approvers and timeout
+tags: [workflow, approval, stages]
+parameters:
+  - name: skill_name
+    type: str
+    description: Skill display name
+    required: true
+  - name: skill_description
+    type: str
+    description: Brief description of approval flow purpose
+    required: true
+  - name: approval_stages
+    type: str
+    description: Comma-separated stage names (e.g. draft,review,final)
+    required: true
+  - name: approvers
+    type: str
+    description: Comma-separated approver identifiers per stage
+    required: true
+  - name: timeout
+    type: int
+    description: Timeout in hours for each stage
+    default: 24
+examples:
+  - "Two-stage approval: draft -> review -> final"
+#}
+---
+name: {{ skill_name | kebab_case }}
+description: {{ skill_description }}
+metadata:
+  author: owlclaw
+  version: "1.0"
+owlclaw:
+  spec_version: "1.0"
+  task_type: workflow
+---
+# {{ skill_name }} — 使用指南
+
+## 目标
+
+{{ skill_description }}
+
+## 审批阶段
+
+- 阶段：{{ approval_stages }}
+- 审批人：{{ approvers }}
+- 每阶段超时：{{ timeout }} 小时
+
+## 流程逻辑
+
+1. 按 approval_stages 顺序推进
+2. 每阶段由对应 approvers 审批
+3. 超时未审批则触发提醒或自动处理
+
+## 注意事项
+
+- approval_stages 与 approvers 需一一对应
+- timeout 单位为小时

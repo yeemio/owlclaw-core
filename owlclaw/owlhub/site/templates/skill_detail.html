@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}OwlHub - {{ skill.name }}{% endblock %}
+{% block content %}
+<article class="card">
+  <h1>{{ skill.name }} <span class="meta">@{{ skill.version }}</span></h1>
+  <div class="meta">Publisher: {{ skill.publisher }}</div>
+  <p>{{ skill.description }}</p>
+  <div class="meta">
+    Total downloads: {{ skill.statistics.total_downloads or 0 }},
+    Last 30d: {{ skill.statistics.downloads_last_30d or 0 }}
+  </div>
+  <div class="tags">
+    {% for tag in skill.tags %}<span class="tag">{{ tag }}</span>{% endfor %}
+  </div>
+  <p><a href="{{ skill.download_url }}">Download package</a></p>
+</article>
+{% endblock %}

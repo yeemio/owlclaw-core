@@ -1,0 +1,33 @@
+name: Feature Request
+description: Propose an improvement or new capability.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What problem does this solve?
+      placeholder: Describe current limitation.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed Solution
+      description: Describe your proposed behavior/API.
+      placeholder: Concrete proposal with expected behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: What alternatives were evaluated?
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact and Scope
+      description: Which modules/specs may be affected?
+      placeholder: e.g. triggers, governance, release workflow

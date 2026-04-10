@@ -1,0 +1,63 @@
+{#
+name: Notification Sender
+description: Send notifications via configurable channels with template support
+tags: [report, notification, alert, messaging]
+parameters:
+  - name: skill_name
+    type: str
+    description: Skill display name
+    required: true
+  - name: skill_description
+    type: str
+    description: Brief description of notification purpose
+    required: true
+  - name: notification_type
+    type: str
+    description: Type (e.g. alert, digest, reminder)
+    required: true
+  - name: channels
+    type: str
+    description: Comma-separated channels (e.g. email, slack, sms, webhook)
+    required: true
+  - name: template
+    type: str
+    description: "Message template or template ID (optional placeholder: {title}, {body})"
+    default: ""
+examples:
+  - "Send alerts to Slack and email"
+  - "Weekly digest notification"
+#}
+---
+name: {{ skill_name | kebab_case }}
+description: {{ skill_description }}
+metadata:
+  author: owlclaw
+  version: "1.0"
+owlclaw:
+  spec_version: "1.0"
+  task_type: report
+---
+# {{ skill_name }} — 使用指南
+
+## 目标
+
+{{ skill_description }}
+
+## 配置
+
+- 通知类型：{{ notification_type }}
+- 通道：{{ channels }}
+- 模板：{{ template }}
+
+## 发送逻辑
+
+1. 接收通知 payload（title、body 等）
+2. 若 template 非空，按模板渲染内容
+3. 按 channels 分发到各通道
+4. 记录发送结果
+
+## 注意事项
+
+- notification_type 用于路由和限流策略
+- template 支持 {title}、{body} 等占位符
+- channels 需预先配置并验证可用性

@@ -1,0 +1,63 @@
+{#
+name: API Client
+description: Call external APIs with configurable base URL, endpoints, and auth
+tags: [integration, api, client, http]
+parameters:
+  - name: skill_name
+    type: str
+    description: Skill display name
+    required: true
+  - name: skill_description
+    type: str
+    description: Brief description of API integration purpose
+    required: true
+  - name: api_base_url
+    type: str
+    description: Base URL of the API (e.g. https://api.example.com/v1)
+    required: true
+  - name: endpoints
+    type: str
+    description: Comma-separated endpoint paths or methods (e.g. GET /users, POST /orders)
+    required: true
+  - name: auth_type
+    type: str
+    description: Auth type (e.g. bearer, api_key, basic, none)
+    default: "bearer"
+examples:
+  - "REST API client for user management"
+  - "External CRM API integration with OAuth"
+#}
+---
+name: {{ skill_name | kebab_case }}
+description: {{ skill_description }}
+metadata:
+  author: owlclaw
+  version: "1.0"
+owlclaw:
+  spec_version: "1.0"
+  task_type: integration
+---
+# {{ skill_name }} — 使用指南
+
+## 目标
+
+{{ skill_description }}
+
+## API 配置
+
+- Base URL：{{ api_base_url }}
+- 端点：{{ endpoints }}
+- 认证方式：{{ auth_type }}
+
+## 调用逻辑
+
+1. 连接 {{ api_base_url }}
+2. 按 auth_type 注入认证信息
+3. 调用 endpoints 对应的方法
+4. 解析响应并返回结果
+
+## 注意事项
+
+- api_base_url 应包含协议和版本
+- auth_type 为 none 时跳过认证
+- 建议对敏感信息使用环境变量

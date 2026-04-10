@@ -1,0 +1,69 @@
+{#
+name: Data Sync
+description: Sync data between source and destination with configurable mode and schedule
+tags: [integration, sync, data, etl]
+parameters:
+  - name: skill_name
+    type: str
+    description: Skill display name
+    required: true
+  - name: skill_description
+    type: str
+    description: Brief description of data sync purpose
+    required: true
+  - name: source
+    type: str
+    description: Source system or data location (e.g. db:postgres, api:salesforce)
+    required: true
+  - name: destination
+    type: str
+    description: Destination system or data location (e.g. db:warehouse, s3:bucket)
+    required: true
+  - name: sync_mode
+    type: str
+    description: Sync mode (e.g. full, incremental, append)
+    default: "incremental"
+  - name: schedule
+    type: str
+    description: Cron expression or interval (e.g. "0 */6 * * *" for every 6h)
+    default: "0 * * * *"
+examples:
+  - "Sync orders from Postgres to warehouse daily"
+  - "Incremental sync from API to S3 every 6 hours"
+#}
+---
+name: {{ skill_name | kebab_case }}
+description: {{ skill_description }}
+metadata:
+  author: owlclaw
+  version: "1.0"
+owlclaw:
+  spec_version: "1.0"
+  task_type: integration
+---
+# {{ skill_name }} — 使用指南
+
+## 目标
+
+{{ skill_description }}
+
+## 同步配置
+
+- 源：{{ source }}
+- 目标：{{ destination }}
+- 模式：{{ sync_mode }}
+- 调度：{{ schedule }}
+
+## 同步逻辑
+
+1. 按 schedule 触发任务
+2. 从 source 拉取数据
+3. 按 sync_mode 处理（全量/增量/追加）
+4. 写入 destination
+5. 记录同步状态与进度
+
+## 注意事项
+
+- sync_mode 为 incremental 时需有增量键
+- schedule 为 cron 表达式，默认每小时
+- 建议对大批量数据做分页或流式处理
