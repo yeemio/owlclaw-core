@@ -59,7 +59,7 @@ jobs:
           path: dist/owlhub/index.json
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: dist/owlhub/site
 
